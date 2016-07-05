@@ -1,0 +1,17 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "json.schemas": [
+        {
+           "fileMatch": [
+            "/manifest.json"
+        ],
+            "url": "http://json.schemastore.org/chrome-manifest"
+        }
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.DS_Store": true,
+        "**/node_modules": true
+    }
+}
