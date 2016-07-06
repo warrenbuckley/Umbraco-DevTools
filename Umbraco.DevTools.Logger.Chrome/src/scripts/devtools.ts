@@ -8,6 +8,13 @@ chrome.devtools.inspectedWindow.eval("location.origin", function(result: string,
     
         //Manually push/add a script tag to SignalR proxy Hub
         //We assume the SignalR proxy is at http://domain.co.uk + /signalr/hubs
+
+        // TODO: PERMISSIONS PROBLEM INJECTING A JS FILE THAT IS NOT LOCAL TO EXTENSION
+        // Refused to load the script because it violates the following Content Security Policy directive: "script-src 'self' blob: filesystem: chrome-extension-resource:".
+
+        //WB: May be OK to create proxy manually & include it here
+        //BUT will need to detect an error if the SignalR manual proxy cannot connect
+
         var signalrProxy = document.createElement("script");
         signalrProxy.src = result + "/signalr/hubs";
         signalrProxy.onload = signalrLoaded;
