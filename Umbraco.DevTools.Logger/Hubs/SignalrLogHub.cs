@@ -31,8 +31,9 @@ namespace Umbraco.DevTools.Logger.Hubs
         {
             //Call the broadcastMessage JS Function to update clients.
             Clients.All.broadcastMessage(name, message);
+
         }
-        
+
 
         // See if we need to do anything smart when the cleitn first connects or disconnects
         //public override Task OnConnected()

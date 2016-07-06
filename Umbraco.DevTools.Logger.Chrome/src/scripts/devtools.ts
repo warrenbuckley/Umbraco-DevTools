@@ -1,55 +1,75 @@
  /// <reference path="../typings/index.d.ts" />
 
-// Chrome API - Inspected Tab - Get the URL so we can inject the SignalR proxy hub JS
-chrome.devtools.inspectedWindow.eval("location.origin", function(result: string, exception) {
-    if (!exception){
+$(function () {
 
-        console.log('Domain of inspected tab', result);
-    
-        //Manually push/add a script tag to SignalR proxy Hub
-        //We assume the SignalR proxy is at http://domain.co.uk + /signalr/hubs
+    chrome.devtools.inspectedWindow.eval("location.origin", function(result: string, exception) {
+        if(!exception){
+            // Wire up to the signalr log hub
+            var connection = $.hubConnection();
+            var logHubProxy = connection.createHubProxy('signalrLogHub');
 
-        // TODO: PERMISSIONS PROBLEM INJECTING A JS FILE THAT IS NOT LOCAL TO EXTENSION
-        // Refused to load the script because it violates the following Content Security Policy directive: "script-src 'self' blob: filesystem: chrome-extension-resource:".
+            //Set where /signalr is
+            //So it's the current inspected tab + /signalr
+            connection.url = result + "/signalr";
 
-        //WB: May be OK to create proxy manually & include it here
-        //BUT will need to detect an error if the SignalR manual proxy cannot connect
+            // Create a function that the hub can call back to display messages.
+            logHubProxy.on('appendLogMessage', appendLogMessage);
 
-        var signalrProxy = document.createElement("script");
-        signalrProxy.src = result + "/signalr/hubs";
-        signalrProxy.onload = signalrLoaded;
-        signalrProxy.onerror = signalrFailed;
+            connection.start()
+                .done(function(){ 
+                    console.log('Connection', connection);
+                    console.log('Now connected, connection ID=' + connection.id); 
+                })
+                .fail(function(){
+                    //This might be because of Auth problems
+                    //Or this page/site does not have the SignalR Log4Net Hub or may not even be an Umbraco site
+                    displayError();
+                });
 
-        //Append the JS to the head tag
-        document.head.appendChild(signalrProxy);
+        } else{
+            console.log('Unable to get the tabs location.origin aka domain');
+        }
+    });
 
-    }
-    else {
-        //Used for internal debugging
-        console.log("Unable to get the inspected tab location.origin.", exception);
-
-        //Message displayed in DevTools tab - so user can see/understand the error
-        var errorMessage = document.createElement("div");
-        errorMessage.innerHTML = "<h1>Error</h1>Unable to get in the inspected tab using <pre>location.origin</pre>"
-        document.body.appendChild(errorMessage);
-        
-    }
 });
 
-
-function signalrLoaded(){
-    alert('SignalR Loaded');
-}
-
-function signalrFailed(){
-    alert('FAILED');
-}
-
-
 //Main JS function called from SignalR Hub to add a new Log4Net Message
-function appendLogMessage(logMessage:string){
+function appendLogMessage(log:logMessage){
     
-    //Just alert what we push from the server
-    alert(logMessage);
+    //Message displayed in DevTools tab - so user can see/understand the error
+    var errorMessage = document.createElement("div");
+    errorMessage.className = log.LoggingEvent.Level.Name.toLowerCase();
+    errorMessage.innerHTML = "<pre>" + log.FormattedEvent + "</pre>";
+    document.body.appendChild(errorMessage);
+
+}
+
+
+interface logMessage {
+    FormattedEvent:string;
+    LoggingEvent:logForNet;
+}
+
+interface logForNet {
+    Domain:string;
+    ExceptionString:string;
+    LoggerName:string;
+    Message:string;
+    Level: logForNetLevel;
+    //There are more properties available not 100% sure if they are useful
+}
+
+interface logForNetLevel {
+    DisplayName: string;
+    Name: string;
+    Value:number;
+}
+
+function displayError(){
+
+    //Message displayed in DevTools tab - so user can see/understand the error
+    var errorMessage = document.createElement("div");
+    errorMessage.innerHTML = "<h1>Error</h1><p>Cannot connect to SignalR Log4Net Hub or you do not have permission to.</p>"
+    document.body.appendChild(errorMessage);
 
 }
