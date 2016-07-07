@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Umbraco.DevTools.Logger.Appender;
+using Umbraco.DevTools.Logger.Attributes;
+using Umbraco.Web.Mvc;
 
 namespace Umbraco.DevTools.Logger.Hubs
 {
+    
+    [UmbracoAuthorizeSignalr]
     public class SignalrLogHub : Hub
     {
         public SignalrLogHub()
@@ -20,20 +24,7 @@ namespace Umbraco.DevTools.Logger.Hubs
             //We need to invoke the JS function appendLogMessage on all clients
             Clients.All.appendLogMessage(logEntry);
         }
-
-
-        /// <summary>
-        /// JUST AN EXAMPLE CODE SNIPEPT
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="message"></param>
-        public void Send(string name, string message)
-        {
-            //Call the broadcastMessage JS Function to update clients.
-            Clients.All.broadcastMessage(name, message);
-
-        }
-
+        
 
         // See if we need to do anything smart when the cleitn first connects or disconnects
         //public override Task OnConnected()

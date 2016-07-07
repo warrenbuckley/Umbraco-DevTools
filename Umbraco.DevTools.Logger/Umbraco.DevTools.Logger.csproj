@@ -269,6 +269,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Appender\SignalrLogAppender.cs" />
+    <Compile Include="Attributes\UmbracoAuthorizeSignalrAttribute.cs" />
     <Compile Include="Hubs\SignalrLogHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
