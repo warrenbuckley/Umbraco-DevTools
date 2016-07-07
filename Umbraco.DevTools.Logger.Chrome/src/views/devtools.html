@@ -1,6 +1,6 @@
 <html>
     <head>
-        <!-- jQuery -->
+        <!-- jQuery Lib -->
         <script src="../scripts/jquery-1.6.4.min.js"></script>
 
         <!-- Main SignalR Lib -->
@@ -12,10 +12,20 @@
         <!-- Scripts -->
         <script src="../scripts/devtools.js"></script>
 
+        <style type="text/css">
+            #importantMessages div,
+            #logs div {
+                font-family:Consolas, Lucida Console, monospace;
+                font-size:12px;
+            }
+        </style>
     </head>
     <body>
 
-        <h1>Hello World</h1>        
+        <div id="importantMessages"></div>
+
+        <!-- Pushed Logs will be appended inside this div -->
+        <div id="logs"></div>  
 
     </body>
 </html>

@@ -16,7 +16,11 @@ $(function () {
             logHubProxy.on('appendLogMessage', appendLogMessage);
 
             connection.start()
-                .done(function(){ 
+                .done(function(){
+
+                    //Display our conencted/welcome message
+                    appendConnectedMessage();
+                    
                     console.log('Connection', connection);
                     console.log('Now connected, connection ID=' + connection.id); 
                 })
@@ -33,6 +37,16 @@ $(function () {
 
 });
 
+function appendConnectedMessage(){
+    //Message displayed in DevTools tab - so user can see/understand the error
+    var errorMessage = document.createElement("div");
+    errorMessage.innerHTML = "<pre> Connected</pre>";
+
+    //Select the main importantMessages div by it's id to inject messages
+    document.getElementById('importantMessages').appendChild(errorMessage);
+
+}
+
 //Main JS function called from SignalR Hub to add a new Log4Net Message
 function appendLogMessage(log:logMessage){
     
@@ -40,8 +54,15 @@ function appendLogMessage(log:logMessage){
     var errorMessage = document.createElement("div");
     errorMessage.className = log.LoggingEvent.Level.Name.toLowerCase();
     errorMessage.innerHTML = "<pre>" + log.FormattedEvent + "</pre>";
-    document.body.appendChild(errorMessage);
 
+    //Select the main logs div by it's id to inject messages
+    document.getElementById('logs').appendChild(errorMessage);
+
+    //TODO: Use log.LoggingEvent which has the full rich detail
+    //Talk to designer boyz on UI - click item to toggle a pane that expands this extra info
+
+    //Scroll to bottom of page
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 
