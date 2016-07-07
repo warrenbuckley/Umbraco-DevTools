@@ -15,6 +15,9 @@ namespace Umbraco.DevTools.Logger
         public override void Configuration(IAppBuilder app)
         {
 
+            //Carry on doing the normal Umbraco OWIN stuff required to make Umbraco work
+            base.Configuration(app);
+
             // http://www.asp.net/signalr/overview/guide-to-the-api/hubs-api-guide-javascript-client#crossdomain
             // Branch the pipeline here for requests that start with "/signalr"
             app.Map("/signalr", map =>
@@ -37,8 +40,6 @@ namespace Umbraco.DevTools.Logger
                 map.RunSignalR(hubConfiguration);
             });
 
-            //Carry on doing the normal Umbraco OWIN stuff required to make Umbraco work
-            base.Configuration(app);
         }
     }
 }
