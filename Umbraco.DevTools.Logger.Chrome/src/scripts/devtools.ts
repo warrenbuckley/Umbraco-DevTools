@@ -51,6 +51,11 @@ $(function () {
     }, "html"); //Had to explictly set mime type to HTML
 
     
+    $(document).on("click", ".summary", function(event){
+        event.preventDefault();
+        $(this).next('div.details').toggle();
+    }); 
+
 });
 
 function appendConnectedMessage(){
