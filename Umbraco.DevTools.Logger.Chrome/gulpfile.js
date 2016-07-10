@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var ts = require('gulp-typescript');
-
+var less = require('gulp-less');
 
 gulp.task('scripts', function() {
     var tsResult = gulp.src('src/scripts/**/*.ts')
@@ -21,6 +21,11 @@ gulp.task('copy', function() {
 
 });
 
+//compile less to css & copy out to dist folder
+gulp.task('less', function () {
+    return gulp.src('src/styles/**/*.less').pipe(less()).pipe(gulp.dest('dist/css'));
+});
+
 // Rerun the task when a file changes
 gulp.task('watch', function() {
 
@@ -28,6 +33,7 @@ gulp.task('watch', function() {
   gulp.watch('src/views/**', ['copy']);
   gulp.watch('src/manifest.json', ['copy']);
   gulp.watch('src/scripts/**/*.ts', ['scripts']);
+  gulp.watch('src/styles/**/*.less', ['less']);
 });
 
 // The default task (called when you run `gulp` from cli)

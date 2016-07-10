@@ -1,0 +1,32 @@
+@font: "monospace";
+
+@warn: #fff5c2;
+@warn-dark: #5c3c00;
+
+
+@error: #fff5c2;
+@info: #fff5c2;
+
+
+body {
+    font-family:@font;
+    font-size:12px;
+}
+
+
+
+.log-item {
+    
+    &.DEBUG {
+        // color: @warn-dark;
+        // background-color: @warn;
+    }
+
+    .summary {
+        
+    }
+
+    .details {
+        display: none; /* hide container of extra info by default */
+    }
+}

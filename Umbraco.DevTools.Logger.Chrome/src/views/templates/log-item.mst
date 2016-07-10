@@ -1,0 +1,25 @@
+<div class="log-item {{LoggingEvent.Level.Name}}">
+    <!-- Summary Line -->
+    <div class="summary">
+       <pre>{{FormattedEvent}}</pre>
+    </div>
+
+    <!-- Click the summary line to toggle showing & hiding the full details -->
+    <div class="details">
+        {{#LoggingEvent.LoggerName}}
+            <h3>Logger Name</h3>
+            {{LoggingEvent.LoggerName}}
+        {{/LoggingEvent.LoggerName}}
+
+        {{#LoggingEvent.Message}}
+            <h3>Message</h3>
+            {{LoggingEvent.Message}}
+        {{/LoggingEvent.Message}}
+
+        {{#LoggingEvent.ExceptionString}}
+            <h3>Exception</h3>
+            {{LoggingEvent.ExceptionString}}
+        {{/LoggingEvent.ExceptionString}}
+
+    </div>
+</div>

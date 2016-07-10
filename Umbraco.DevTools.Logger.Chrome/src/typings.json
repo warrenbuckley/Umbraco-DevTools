@@ -2,6 +2,7 @@
   "globalDependencies": {
     "chrome": "registry:dt/chrome#0.0.0+20160509083626",
     "jquery": "registry:dt/jquery#1.10.0+20160704162008",
+    "mustache": "registry:dt/mustache#0.8.2+20160316155526",
     "signalr": "registry:dt/signalr#2.2.0+20160509082439"
   }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNet.SignalR;
+using Umbraco.Core.Security;
 using Umbraco.DevTools.Logger.Appender;
 using Umbraco.DevTools.Logger.Attributes;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
 namespace Umbraco.DevTools.Logger.Hubs
@@ -20,8 +22,12 @@ namespace Umbraco.DevTools.Logger.Hubs
         /// </summary>
         private void MessageLogged(LogEntry logEntry)
         {
+            //var user = Context.User;
+            //var name = user.Identity.Name;
+            //var isAuthd = user.Identity.IsAuthenticated;
+
             //So when this is invoked by Log4Net
-            //We need to invoke the JS function appendLogMessage on all clients
+            //We need to invoke the JS function appendLogMessage on all clients that are connected
             Clients.All.appendLogMessage(logEntry);
         }
         

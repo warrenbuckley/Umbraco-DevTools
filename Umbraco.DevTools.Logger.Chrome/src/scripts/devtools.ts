@@ -1,5 +1,7 @@
  /// <reference path="../typings/index.d.ts" />
 
+var logItemTemplate = '';
+
 $(function () {
 
     chrome.devtools.inspectedWindow.eval("location.origin", function(result: string, exception) {
@@ -35,6 +37,20 @@ $(function () {
         }
     });
 
+    //Load & cache the mustache template
+    //Fetch Mustache Template with jQuery AJAX get
+    $.get('templates/log-item.mst', function(templateMarkup) {
+
+        //The mustache template as HTML
+        logItemTemplate = templateMarkup;
+
+        //Parse the template once on DOM load
+        //No need to fetch it every time
+        Mustache.parse(logItemTemplate);
+
+    }, "html"); //Had to explictly set mime type to HTML
+
+    
 });
 
 function appendConnectedMessage(){
@@ -50,19 +66,21 @@ function appendConnectedMessage(){
 //Main JS function called from SignalR Hub to add a new Log4Net Message
 function appendLogMessage(log:logMessage){
     
+    console.log('log', log);
+
+    var rendered = Mustache.render(logItemTemplate, log);
+
     //Message displayed in DevTools tab - so user can see/understand the error
     var errorMessage = document.createElement("div");
-    errorMessage.className = log.LoggingEvent.Level.Name.toLowerCase();
-    errorMessage.innerHTML = "<pre>" + log.FormattedEvent + "</pre>";
+
+    // Set the HTML from the MustacheJS template
+    errorMessage.innerHTML = rendered;
 
     //Select the main logs div by it's id to inject messages
     document.getElementById('logs').appendChild(errorMessage);
 
-    //TODO: Use log.LoggingEvent which has the full rich detail
-    //Talk to designer boyz on UI - click item to toggle a pane that expands this extra info
-
     //Scroll to bottom of page
-    window.scrollTo(0, document.body.scrollHeight);
+    window.scrollTo(0, document.body.scrollHeight);   
 }
 
 

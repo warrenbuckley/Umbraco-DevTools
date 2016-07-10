@@ -22,6 +22,10 @@ namespace Umbraco.DevTools.Logger
             // Branch the pipeline here for requests that start with "/signalr"
             app.Map("/signalr", map =>
             {
+                //WB: Trying this as a random thing
+                //map.UseUmbracoBackOfficeCookieAuthentication(ApplicationContext.Current, PipelineStage.Authenticate);
+                //map.UseUmbracoBackOfficeExternalCookieAuthentication(ApplicationContext.Current, PipelineStage.Authenticate);
+                
                 // Setup the CORS middleware to run before SignalR.
                 // By default this will allow all origins. You can 
                 // configure the set of origins and/or http verbs by

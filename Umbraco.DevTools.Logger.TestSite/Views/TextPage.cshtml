@@ -1,6 +1,8 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
 @{
     Layout = "Master.cshtml";
+    throw new Exception("this is my exception");
 }
+
 
 @CurrentPage.GetGridHtml("content", "fanoe")
