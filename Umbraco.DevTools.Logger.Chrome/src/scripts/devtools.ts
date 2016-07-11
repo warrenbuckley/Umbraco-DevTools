@@ -39,18 +39,28 @@ $(function () {
 
     //Load & cache the mustache template
     //Fetch Mustache Template with jQuery AJAX get
-    $.get('templates/log-item.mst', function(templateMarkup) {
+    var templateRequest = new XMLHttpRequest();
+
+    templateRequest.open('GET','templates/log-item.mst', true);
+    templateRequest.onreadystatechange = function(){
+        if(templateRequest.status !== 200){
+            console.log('Problem fetching mustache template');
+            return;
+        }
 
         //The mustache template as HTML
-        logItemTemplate = templateMarkup;
+        logItemTemplate = templateRequest.responseText;
 
         //Parse the template once on DOM load
         //No need to fetch it every time
         Mustache.parse(logItemTemplate);
+    };
 
-    }, "html"); //Had to explictly set mime type to HTML
+    templateRequest.send();
+
 
     //Toggle click the summary item to display the related div with full details
+    //TODO: Replace with vanilla JS
     $(document).on("click", ".summary", function(event){
         event.preventDefault();
         $(this).next('div.details').toggle();
