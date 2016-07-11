@@ -37,10 +37,20 @@ $(function () {
         }
     });
 
+    //Get the Mustache template via a simple GET & pre-parse it
+    fetchMustacheTemplate();
+
+    //Button click event - To clear logs
+    var clearButton = document.getElementById('clearButton');
+    clearButton.addEventListener('click', clearLogs);
+
+});
+
+function fetchMustacheTemplate(){
+
     //Load & cache the mustache template
     //Fetch Mustache Template with jQuery AJAX get
     var templateRequest = new XMLHttpRequest();
-
     templateRequest.open('GET','templates/log-item.mst', true);
     templateRequest.onreadystatechange = function(){
         if(templateRequest.status !== 200){
@@ -55,24 +65,34 @@ $(function () {
         //No need to fetch it every time
         Mustache.parse(logItemTemplate);
     };
-
     templateRequest.send();
 
+}
 
-    //Toggle click the summary item to display the related div with full details
-    //TODO: Replace with vanilla JS
-    $(document).on("click", ".summary", function(event){
-        event.preventDefault();
-        $(this).next('div.details').toggle();
-    });
+function toggleDetailsDisplay(e:Event){
+    e.preventDefault();
+    console.log('clicked item', e);
 
-    //Button to clear logs
-    var clearButton = document.getElementById('clearButton');
-    clearButton.addEventListener('click', clearLogs);
+    var clickedElement = e.srcElement;
+    var summaryElement;
 
-});
+    if(clickedElement.nodeName.toLowerCase() === "pre"){
+        //We clicked the pre inside the div - so get the parent div
+        summaryElement = clickedElement.parentElement;
+    }
+    else {
+        //We clicked the actual div - yay
+        summaryElement = clickedElement;
+    }
 
-function clearLogs() {
+    //Get next sibling of the clicked item
+    //Which should be the .details div
+    var details = summaryElement.nextElementSibling;
+    details.classList.toggle('show');
+}
+
+function clearLogs(e:Event) {
+    e.preventDefault();
     document.getElementById('importantMessages').innerHTML = '';
     document.getElementById('logs').innerHTML = '';
 }
@@ -104,7 +124,7 @@ function appendLogMessage(log:logMessage){
 
     //Only log items to the DIV if checkbox is NOT checked
     if(checkbox.checked === false){
-        console.log('log', log);
+        console.log('Log Item', log);
 
         var rendered = Mustache.render(logItemTemplate, log);
 
@@ -116,6 +136,12 @@ function appendLogMessage(log:logMessage){
 
         //Select the main logs div by it's id to inject messages
         document.getElementById('logs').appendChild(logMessage);
+
+        //Find the '.summary' div that gets added from mustache template
+        //and wire up click event handler - as not like jQuery where new DOM items will have same click
+        //Select first item in 0 based array (should only ever be one result)
+        var summary = logMessage.getElementsByClassName('summary')[0];
+        summary.addEventListener('click', toggleDetailsDisplay);
 
         //Scroll to bottom of page
         window.scrollTo(0, document.body.scrollHeight);
