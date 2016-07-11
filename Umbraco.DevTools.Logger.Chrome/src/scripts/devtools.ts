@@ -50,42 +50,67 @@ $(function () {
 
     }, "html"); //Had to explictly set mime type to HTML
 
-    
+    //Toggle click the summary item to display the related div with full details
     $(document).on("click", ".summary", function(event){
         event.preventDefault();
         $(this).next('div.details').toggle();
-    }); 
+    });
+
+    //Button to clear logs
+    var clearButton = document.getElementById('clearButton');
+    clearButton.addEventListener('click', clearLogs);
 
 });
+
+function clearLogs() {
+    document.getElementById('importantMessages').innerHTML = '';
+    document.getElementById('logs').innerHTML = '';
+}
 
 function appendConnectedMessage(){
     //Message displayed in DevTools tab - so user can see/understand the error
     var errorMessage = document.createElement("div");
-    errorMessage.innerHTML = "<pre> Connected</pre>";
+    errorMessage.innerHTML = "<pre>Connected to Umbraco Logging...</pre>";
 
     //Select the main importantMessages div by it's id to inject messages
     document.getElementById('importantMessages').appendChild(errorMessage);
+}
 
+function displayError(){
+
+    //Message displayed in DevTools tab - so user can see/understand the error
+    var errorMessage = document.createElement("div");
+    errorMessage.innerHTML = "<pre>Error: Cannot connect to SignalR Log4Net Hub or you do not have permission to.</pre>";
+    
+    //Select the main importantMessages div by it's id to inject messages
+    document.getElementById('importantMessages').appendChild(errorMessage);
 }
 
 //Main JS function called from SignalR Hub to add a new Log4Net Message
 function appendLogMessage(log:logMessage){
     
-    console.log('log', log);
+    //Get value of checkbox in toolbar
+    var checkbox = document.getElementById('pauseLogger');
 
-    var rendered = Mustache.render(logItemTemplate, log);
+    //Only log items to the DIV if checkbox is NOT checked
+    if(checkbox.checked === false){
+        console.log('log', log);
 
-    //Message displayed in DevTools tab - so user can see/understand the error
-    var errorMessage = document.createElement("div");
+        var rendered = Mustache.render(logItemTemplate, log);
 
-    // Set the HTML from the MustacheJS template
-    errorMessage.innerHTML = rendered;
+        //Message displayed in DevTools tab - so user can see/understand the error
+        var logMessage = document.createElement("div");
 
-    //Select the main logs div by it's id to inject messages
-    document.getElementById('logs').appendChild(errorMessage);
+        // Set the HTML from the MustacheJS template
+        logMessage.innerHTML = rendered;
 
-    //Scroll to bottom of page
-    window.scrollTo(0, document.body.scrollHeight);   
+        //Select the main logs div by it's id to inject messages
+        document.getElementById('logs').appendChild(logMessage);
+
+        //Scroll to bottom of page
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+       
 }
 
 
@@ -109,11 +134,3 @@ interface logForNetLevel {
     Value:number;
 }
 
-function displayError(){
-
-    //Message displayed in DevTools tab - so user can see/understand the error
-    var errorMessage = document.createElement("div");
-    errorMessage.innerHTML = "<h1>Error</h1><p>Cannot connect to SignalR Log4Net Hub or you do not have permission to.</p>"
-    document.body.appendChild(errorMessage);
-
-}

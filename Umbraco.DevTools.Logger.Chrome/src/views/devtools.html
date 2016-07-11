@@ -20,11 +20,23 @@
     </head>
     <body>
 
-        <div id="importantMessages"></div>
+        <div id="container">
 
-        <!-- Pushed Logs will be appended inside this div -->
-        <div id="logs"></div>
+             <!-- Need this fixed to the top -->
+            <div id="toolbar">
+                Pause Logs <input type="checkbox" name="pauseLogger" id="pauseLogger" />
+                <button id="clearButton">Clear Logs</button>
+            </div>
+
+            <div id="items">
+                <!-- Connected or error message connecting here -->
+                <div id="importantMessages"></div>
+
+                <!-- Pushed Logs will be appended inside this div -->
+                <div id="logs"></div>
+            </div>
+
+        </div>
+
     </body>
-
-    
 </html>

@@ -1,32 +1,86 @@
-@font: "monospace";
+@font: monospace;
+
+@error: #fff0f0;
+@error-mid: #ffd6d6;
+@error-dark:red;
 
 @warn: #fff5c2;
 @warn-dark: #5c3c00;
 
-
-@error: #fff5c2;
 @info: #fff5c2;
+@info-dark: #5c3c00;
+
+@debug: rgba(0,0,0,0.01);
+@debug-dark: rgba(0,0,0,1);
+
+@light: #f1f1f1;
+@border:rgba(0,0,0,0.15);
 
 
 body {
-    font-family:@font;
-    font-size:12px;
+    margin:0;
+    padding:0;
 }
 
-
+#importantMessages {
+    pre {
+        margin:0;
+        padding:10px;
+        font-family:@font;
+        font-size:12px;
+        border-bottom:1px solid @border;
+    }
+}
 
 .log-item {
-    
+    font-family:@font;
+    font-size:12px;
+    padding:0;
+    border-bottom:1px solid @border;
+
+    &.FATAL,
+    &.ERROR {
+        color: @error-dark;
+        background-color: @error;
+    }
+
+    &.WARN {
+        color: @warn-dark;
+        background-color: @warn;
+    }
+
+    &.INFO {
+        color: @info-dark;
+        background-color: @info;
+    }
+
     &.DEBUG {
-        // color: @warn-dark;
-        // background-color: @warn;
+        color: @debug-dark;
+        background-color: @debug;
     }
 
     .summary {
-        
+        cursor: pointer;
+        padding:5px 10px;
+        margin:0;
+
+        pre {
+            margin:0;
+            padding:0;
+        }
     }
 
     .details {
         display: none; /* hide container of extra info by default */
+        background-color: @light;
+        padding:5px 10px 30px 10px;
+        margin:0;
+        color:#000;
+
+        h3 {
+            margin:0;
+            padding:10px 0 0 0;
+        }
+
     }
 }
