@@ -76,8 +76,8 @@ function toggleDetailsDisplay(e:Event){
     var clickedElement = e.srcElement;
     var summaryElement;
 
-    if(clickedElement.nodeName.toLowerCase() === "pre"){
-        //We clicked the pre inside the div - so get the parent div
+    if(clickedElement.nodeName.toLowerCase() === "span"){
+        //We clicked the span inside the div - so get the parent div
         summaryElement = clickedElement.parentElement;
     }
     else {
@@ -134,8 +134,10 @@ function appendLogMessage(log:logMessage){
         // Set the HTML from the MustacheJS template
         logMessage.innerHTML = rendered;
 
+        var logs =  document.getElementById('logs');
+
         //Select the main logs div by it's id to inject messages
-        document.getElementById('logs').appendChild(logMessage);
+        logs.appendChild(logMessage);
 
         //Find the '.summary' div that gets added from mustache template
         //and wire up click event handler - as not like jQuery where new DOM items will have same click
@@ -144,7 +146,8 @@ function appendLogMessage(log:logMessage){
         summary.addEventListener('click', toggleDetailsDisplay);
 
         //Scroll to bottom of page
-        window.scrollTo(0, document.body.scrollHeight);
+        //TODO: Figure out how to scroll inside the div correctly when new log item added
+        logs.scrollTop = logs.scrollHeight;
     }
        
 }

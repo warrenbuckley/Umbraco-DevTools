@@ -1,7 +1,7 @@
 <div class="log-item {{LoggingEvent.Level.Name}}">
     <!-- Summary Line -->
     <div class="summary">
-       <pre>{{FormattedEvent}}</pre>
+       <span>{{FormattedEvent}}</span>
     </div>
 
     <!-- Click the summary line to toggle showing & hiding the full details -->

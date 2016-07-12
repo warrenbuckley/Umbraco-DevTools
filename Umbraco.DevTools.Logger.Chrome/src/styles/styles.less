@@ -22,6 +22,27 @@ body {
     padding:0;
 }
 
+
+
+#container {
+    display:flex;
+    flex-direction: column;
+    height:100%;
+}
+
+#toolbar {
+    background: #f3f3f3;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    flex: 0 0 auto;
+}
+
+#items {
+    flex: 1 1 auto;
+	position: relative;/* need this to position inner content */
+    overflow-y: auto;
+}
+
 #importantMessages {
     pre {
         margin:0;
@@ -64,9 +85,10 @@ body {
         padding:5px 10px;
         margin:0;
 
-        pre {
+        span {
             margin:0;
             padding:0;
+            word-wrap: break-word;
         }
     }
 
