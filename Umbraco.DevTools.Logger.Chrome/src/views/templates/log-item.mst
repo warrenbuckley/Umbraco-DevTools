@@ -21,5 +21,25 @@
             {{LoggingEvent.ExceptionString}}
         {{/LoggingEvent.ExceptionString}}
 
+        {{#LoggingEvent.Domain}}
+            <h3>Domain</h3>
+            {{LoggingEvent.Domain}}
+        {{/LoggingEvent.Domain}}
+
+        {{#LoggingEvent.ThreadName}}
+            <h3>Thread Name</h3>
+            {{LoggingEvent.ThreadName}}
+        {{/LoggingEvent.ThreadName}}
+
+        {{#LoggingEvent.Properties.processId}}
+            <h3>Process ID</h3>
+            {{LoggingEvent.Properties.processId}}
+        {{/LoggingEvent.Properties.processId}}
+
+        {{#LoggingEvent.Properties.appDomainId}}
+            <h3>App Domain ID</h3>
+            {{LoggingEvent.Properties.appDomainId}}
+        {{/LoggingEvent.Properties.appDomainId}}
+
     </div>
 </div>
