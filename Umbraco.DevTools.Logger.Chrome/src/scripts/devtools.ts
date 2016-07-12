@@ -99,17 +99,21 @@ function clearLogs(e:Event) {
 
 function appendConnectedMessage(){
     //Message displayed in DevTools tab - so user can see/understand the error
-    var errorMessage = document.createElement("div");
-    errorMessage.innerHTML = "<pre>Connected to Umbraco Logging...</pre>";
+    var connectedMessage = document.createElement("div");
+    connectedMessage.classList.add('log-item');
+    connectedMessage.classList.add('ERROR');
+    connectedMessage.innerHTML = "<pre>Connected to Umbraco Logging...</pre>";
 
     //Select the main importantMessages div by it's id to inject messages
-    document.getElementById('importantMessages').appendChild(errorMessage);
+    document.getElementById('importantMessages').appendChild(connectedMessage);
 }
 
 function displayError(){
 
     //Message displayed in DevTools tab - so user can see/understand the error
     var errorMessage = document.createElement("div");
+    errorMessage.classList.add('log-item');
+    errorMessage.classList.add('ERROR');
     errorMessage.innerHTML = "<pre>Error: Cannot connect to SignalR Log4Net Hub or you do not have permission to.</pre>";
     
     //Select the main importantMessages div by it's id to inject messages
