@@ -3,7 +3,7 @@
 chrome.devtools.panels.create(
     "Umbraco Logs",
     "images/icon.png",
-    "views/devtools.html",
+    "views/logger-devtools.html",
     function(panel){
         
         //Callback function - anything useful in panel object to use?
