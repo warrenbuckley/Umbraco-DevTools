@@ -1,4 +1,4 @@
-# Umbraco DevTools Logger - Chrome Extension
+# Umbraco DevTools - Chrome Extension
 
 ## Build Prep
 You need to do a couple of steps to get ready & started.

@@ -1,13 +1,13 @@
-# Umbraco Dev Tools Logger
-A Chrome Extension to view live logs from an Umbraco Website
+# Umbraco Dev Tools
+A Chrome Extension to view live logs from an Umbraco Website, along with seeing a more detailed view/report of MiniProfiler results
 
 ## Projects
 An overview of what makes up this project
 
-* `Umbraco.DevTools.Logger.Chrome`<br/>
-This is the code for the Chrome Extension itself which is made up of client side assets
+* `Umbraco.DevTools.Chrome`<br/>
+This is the code for the Chrome Extension itself which is made up of client side assets, that includes the logging extension that connects to the Logger SignalR Hub, along with the Mini Profiler results viewer
 
-* `Umbraco.DevTools.Logger.TestSite`<br/>
+* `Umbraco.DevTools.TestSite`<br/>
 This contains a sample Umbraco website allowing us to test and set debug points in the main C# project
 
 * `Umbraco.DevTools.Logger`<br/>
