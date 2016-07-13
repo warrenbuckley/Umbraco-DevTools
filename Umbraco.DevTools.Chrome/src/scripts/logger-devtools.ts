@@ -101,7 +101,7 @@ function appendConnectedMessage(){
     //Message displayed in DevTools tab - so user can see/understand the error
     var connectedMessage = document.createElement("div");
     connectedMessage.classList.add('log-item');
-    connectedMessage.classList.add('ERROR');
+    connectedMessage.classList.add('INFO');
     connectedMessage.innerHTML = "<pre>Connected to Umbraco Logging...</pre>";
 
     //Select the main importantMessages div by it's id to inject messages
@@ -149,9 +149,9 @@ function appendLogMessage(log:logMessage){
         var summary = logMessage.getElementsByClassName('summary')[0];
         summary.addEventListener('click', toggleDetailsDisplay);
 
-        //Scroll to bottom of page
-        //TODO: Figure out how to scroll inside the div correctly when new log item added
-        logs.scrollTop = logs.scrollHeight;
+        //Scroll to bottom of page/log items
+        var logContainer = document.getElementById('items');
+        logContainer.scrollTop = logContainer.scrollHeight;
     }
        
 }
