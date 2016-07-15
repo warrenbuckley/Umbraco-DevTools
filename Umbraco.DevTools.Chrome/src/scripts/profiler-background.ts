@@ -32,7 +32,7 @@ chrome.runtime.onConnect.addListener(function(devToolsConnection) {
 
   },
   {urls: ["http://*/*", "https://*/*"], types: ["main_frame"]},
-  ["blocking"]);
+  ["requestBody"]);
   
   //When the request has finished, we check for any mini-profiler response headers
   chrome.webRequest.onCompleted.addListener(function(details) {
@@ -54,7 +54,13 @@ chrome.runtime.onConnect.addListener(function(devToolsConnection) {
 
             //Loop over this & push into our real array
             for (var i=0; i < profilerIds.length; i++) {
+
+              //Ensurer we cannot find the ID in the array already
+              //Add unique/distinct IDs to the list
+              if(miniProfilerIds.indexOf(profilerIds[i]) === -1){
                 miniProfilerIds.push( profilerIds[i] );
+              }
+               
             }
         }
     }
