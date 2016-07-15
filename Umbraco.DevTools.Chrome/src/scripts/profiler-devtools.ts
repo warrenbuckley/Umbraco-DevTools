@@ -1,56 +1,5 @@
  /// <reference path="../typings/index.d.ts" />
 
-let hasMiniProfilerHeaders = false;
-
-//On a refresh we need to clear out the results
-let miniProfilerIds = [];
-
-// //When any request has finished in the current page
-// chrome.devtools.network.onRequestFinished.addListener(function(request) {
-
-    // let headers = request.response.headers;
-
-    // Loop over the response headers
-    // for (var index = 0; index < headers.length; index++) {
-    //     var headerItem = headers[index];
-
-    //     if(headerItem.name === 'X-MiniProfiler-Ids'){
-    //         hasMiniProfilerHeaders = true;
-
-    //         Parsing as JSON so we get an array of IDs
-    //         As the value is a string not a real JS array object
-    //         let profilerIds = JSON.parse(headerItem.value);
-
-    //         for (var i=0; i < profilerIds.length; i++) {
-    //             miniProfilerIds.push( profilerIds[i] );
-    //         }
-
-    //         console.log('miniProfilerIds for request', miniProfilerIds);
-    //     }
-    // }
-
-//     if(!hasMiniProfilerHeaders){
-//         displayNoProfilersFound();
-//     } else {
-//         fetchProfileItems();
-//     }
-
-// });
-
-
-
-// Request Finish (HTML, CSS, JS, img, will all fire)
-// Check Response Header for mini-profilers
-// Add only distinct IDs to the array - Check it exists before adding
-
-// When ALL requests/page finished THEN
-// We count/check for any items in the array
-// None - then display an error message in the UI
-// Got some IDs then AJAX get each JSON result - for each response do some Mustache template & inject into UI
-
-// When requests/page START or refreshed THEN we need to clear out past/previous results in our array
-// Along with the UI. Would need clearing
-
 
 var profileItemTemplate = '';
 
@@ -78,6 +27,7 @@ backgroundPageConnection.onMessage.addListener(function (message:payloadMessage)
 
 
 //Get the Mustache template via a simple GET & pre-parse it
+//Init stuff...
 fetchMustacheTemplate();
 
 
@@ -109,7 +59,8 @@ function handleMessage(message:payloadMessage){
     
     //Clear out the UI
     if(message.resetUi){
-        document.getElementById('items').innerHTML = '';
+        document.getElementById('importantMessages').innerHTML = '';
+        document.getElementById('profiles').innerHTML = '';
     }
 
     //No profiler id's in response - display error messahe
@@ -129,10 +80,10 @@ function displayError(){
     var errorMessage = document.createElement("div");
     errorMessage.classList.add('log-item');
     errorMessage.classList.add('ERROR');
-    errorMessage.innerHTML = "Error: The site does not contain any Mini-Profiler response headers. Ensure the site is in debug mode.";
+    errorMessage.innerHTML = "<pre>Error: The site does not contain any Mini-Profiler response headers. Ensure the site is in debug mode.</pre>";
     
     //Select the main importantMessages div by it's id to inject messages
-    document.getElementById('items').appendChild(errorMessage);
+    document.getElementById('importantMessages').appendChild(errorMessage);
 }
 
 function fetchProfilers(message:payloadMessage){
@@ -151,25 +102,21 @@ function fetchProfilers(message:payloadMessage){
         //Loop over the IDs in the array & AJAX get each one based on the mini-profiler URL convention
         message.profileIds.forEach(id => {
             
-            //Perform AJAX get of JSON 
-            var jsonRequest = new XMLHttpRequest();
-            jsonRequest.open('GET', baseUrl + id, true);
-            jsonRequest.onreadystatechange = function(){
-                if(jsonRequest.status !== 200){
-                    console.log('Problem fetching JSON for profile ID: ' + id);
-                    return;
-                }
+            //Perform AJAX get of JSON
+            //Use JS Fetch as opposed to XMLHttpRequest
+            fetch(baseUrl + id, { method: 'GET', mode: 'cors'}).then(function(response) {
+                return response.json();
+            }).then(function(returnedValue) {
 
-                //The mustache template as HTML
-                var json = jsonRequest.responseText;
-                console.log('json for id: ' + id, json);
-
-                var rendered = Mustache.render(profileItemTemplate, json);
+                console.log(returnedValue);
+                var rendered = Mustache.render(profileItemTemplate, returnedValue);
 
                 //Append item to the UI
                 renderProfilerItem(rendered);
-            };
-            jsonRequest.send();
+
+            }).catch(function(err) {
+               console.log('Problem fetching JSON for profile ID: ' + id);
+            });
 
         });
 
@@ -184,10 +131,38 @@ function renderProfilerItem(renderedHtml){
     // Set the HTML from the MustacheJS template
     profileMessage.innerHTML = renderedHtml;
 
-    var items =  document.getElementById('items');
+    //Find the '.summary' div that gets added from mustache template
+    //and wire up click event handler - as not like jQuery where new DOM items will have same click
+    //Select first item in 0 based array (should only ever be one result)
+    var summary = profileMessage.getElementsByClassName('summary')[0];
+    summary.addEventListener('click', toggleDetailsDisplay);
+
+    var profiles =  document.getElementById('profiles');
 
     //Select the main logs div by it's id to inject messages
-    items.appendChild(profileMessage);
+    profiles.appendChild(profileMessage);
+}
+
+function toggleDetailsDisplay(e:Event){
+    e.preventDefault();
+    console.log('clicked item', e);
+
+    var clickedElement = e.srcElement;
+    var summaryElement;
+
+    if(clickedElement.nodeName.toLowerCase() === "strong" || clickedElement.nodeName.toLowerCase() === "small"){
+        //We clicked the span inside the div - so get the parent div
+        summaryElement = clickedElement.parentElement;
+    }
+    else {
+        //We clicked the actual div - yay
+        summaryElement = clickedElement;
+    }
+
+    //Get next sibling of the clicked item
+    //Which should be the .details div
+    var details = summaryElement.nextElementSibling;
+    details.classList.toggle('show');
 }
 
 interface payloadMessage {
