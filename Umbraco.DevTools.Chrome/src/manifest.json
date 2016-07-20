@@ -9,14 +9,5 @@
     "48": "images/logo-48.png",
     "16": "images/logo-16.png"
   },
-  "devtools_page": "views/proxy.html",
-  "background": {
-    "scripts": [
-      "scripts/profiler-background.js"
-    ]
-  },
-  "permissions": [
-    "webRequest",
-    "<all_urls>"
-  ]
+  "devtools_page": "views/proxy.html"
 }

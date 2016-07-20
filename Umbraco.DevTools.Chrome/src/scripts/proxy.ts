@@ -10,14 +10,3 @@ chrome.devtools.panels.create(
         console.log('panel', panel);
     }
 );
-
-chrome.devtools.panels.create(
-    "Umbraco Profiler",
-    "images/icon.png",
-    "views/profiler-devtools.html",
-    function(panel){
-        
-        //Callback function - anything useful in panel object to use?
-        console.log('panel', panel);
-    }
-);

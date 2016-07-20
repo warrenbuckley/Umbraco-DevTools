@@ -43,16 +43,7 @@ namespace Umbraco.DevTools.Logger
                 // path.
                 map.RunSignalR(hubConfiguration);
             });
-
-
-            //Setup Allow All CORS Header for Mini-Profiler URL
-            //So we can fetch the JSON with AJAX
-
-            app.MapWhen(x => x.Request.Path.ToUriComponent() == "/mini-profiler-resources/results", map =>
-            {
-                map.UseCors(CorsOptions.AllowAll);
-            });
-
+            
         }   
     }
 }
