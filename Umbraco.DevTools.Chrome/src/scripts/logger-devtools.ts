@@ -1,5 +1,13 @@
  /// <reference path="../typings/index.d.ts" />
 
+/*
+    TODO
+    Add in toolbar UI
+    Connected or disconnected message
+    Add in button to connect (if disconnected)
+    Add in button to disconnected (if connected)
+*/
+
 var logItemTemplate = '';
 
 $(function () {
@@ -30,6 +38,43 @@ $(function () {
                     //This might be because of Auth problems
                     //Or this page/site does not have the SignalR Log4Net Hub or may not even be an Umbraco site
                     displayError();
+                });
+
+
+                //Snippet from SignalR docs
+                //http://www.asp.net/signalr/overview/guide-to-the-api/handling-connection-lifetime-events#notifydisconnect
+                var tryingToReconnect = false;
+
+                //Reconnecting event
+                connection.reconnecting(function(){
+                    tryingToReconnect = true;
+                    console.log('Reconnecting event fired');
+                });
+
+                //Reconnected event
+                connection.reconnected(function(){
+                    tryingToReconnect = false;
+                    console.log('Reconnected event fired');
+                });
+
+                //Disconnect event
+                connection.disconnected(function(){
+                    console.log('Disconnect event (Trying to Reconnect?)', tryingToReconnect);
+
+                    if(tryingToReconnect){
+                        //Trying to reconnect the client due to connectivity
+                        appendReconnectMessage();
+                    }
+                    else {
+                        //The client was disconnected (either by server)
+                        appendDisconnectedMessage();
+                    }
+                });
+
+
+                //Error Event
+                connection.error(function (error) {
+                    console.log('SignalR error: ' + error)
                 });
 
         } else{
@@ -97,27 +142,39 @@ function clearLogs(e:Event) {
     document.getElementById('logs').innerHTML = '';
 }
 
-function appendConnectedMessage(){
+function addMessage(message:string, cssClass:string, appendToImportant:boolean = false){
     //Message displayed in DevTools tab - so user can see/understand the error
-    var connectedMessage = document.createElement("div");
-    connectedMessage.classList.add('log-item');
-    connectedMessage.classList.add('INFO');
-    connectedMessage.innerHTML = "<pre>Connected to Umbraco Logging...</pre>";
+    var messageToDisplay = document.createElement("div");
+    messageToDisplay.classList.add('log-item');
+    messageToDisplay.classList.add(cssClass);
+    messageToDisplay.innerHTML = '<pre>' + message + '</pre>';
 
-    //Select the main importantMessages div by it's id to inject messages
-    document.getElementById('importantMessages').appendChild(connectedMessage);
+    if(appendToImportant){
+        //Select the main importantMessages div by it's id to inject messages
+        document.getElementById('importantMessages').appendChild(messageToDisplay);
+    }
+    else {
+        //Add to the bottom of the logs
+        document.getElementById('logs').appendChild(messageToDisplay);
+    }
+
+    
+}
+
+function appendConnectedMessage(){
+    addMessage('Connected to Umbraco Logging...', 'INFO', true);
+}
+
+function appendDisconnectedMessage(){
+    addMessage('Disconnected from Umbraco Logging...', 'INFO');
+}
+
+function appendReconnectMessage(){
+    addMessage('Reconnecting to Umbraco Logging...', 'INFO');
 }
 
 function displayError(){
-
-    //Message displayed in DevTools tab - so user can see/understand the error
-    var errorMessage = document.createElement("div");
-    errorMessage.classList.add('log-item');
-    errorMessage.classList.add('ERROR');
-    errorMessage.innerHTML = "<pre>Error: Cannot connect to SignalR Log4Net Hub or you do not have permission to.</pre>";
-    
-    //Select the main importantMessages div by it's id to inject messages
-    document.getElementById('importantMessages').appendChild(errorMessage);
+    addMessage('Error: Cannot connect to SignalR Log4Net Hub or you do not have permission to.', 'ERROR');
 }
 
 //Main JS function called from SignalR Hub to add a new Log4Net Message
