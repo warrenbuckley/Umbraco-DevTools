@@ -9,13 +9,13 @@
 */
 
 var logItemTemplate = '';
+var connection = $.hubConnection();
 
 $(function () {
 
     chrome.devtools.inspectedWindow.eval("location.origin", function(result: string, exception) {
         if(!exception){
             // Wire up to the signalr log hub
-            var connection = $.hubConnection();
             var logHubProxy = connection.createHubProxy('signalrLogHub');
 
             //Set where /signalr is
@@ -89,6 +89,10 @@ $(function () {
     var clearButton = document.getElementById('clearButton');
     clearButton.addEventListener('click', clearLogs);
 
+    //Button click event - To clear logs
+    var toggleConnection = document.getElementById('connectionButton');
+    toggleConnection.addEventListener('click', connectOrDisconnect);
+
 });
 
 function fetchMustacheTemplate(){
@@ -142,34 +146,99 @@ function clearLogs(e:Event) {
     document.getElementById('logs').innerHTML = '';
 }
 
-function addMessage(message:string, cssClass:string, appendToImportant:boolean = false){
+function connectOrDisconnect(e:Event){
+    e.preventDefault();
+    console.log('connection state', connection.state);
+
+    //Set the button to disabled
+    //We will remove attribute on button when change label of button & appropiate signalR hub event fired
+    e.srcElement.setAttribute('disabled', 'disabled');
+
+    if(connection.state === HubStatus.Disconnected){
+        //We are disconnected - clicking the button we start up the connection again
+        
+        //Set status message to connecting
+        document.getElementById('status').innerHTML = 'Connecting';
+
+        //TODO: This is duplicate code from the top (NOT NICE)
+        connection.start()
+                .done(function(){
+
+                    //Display our conencted/welcome message
+                    appendConnectedMessage();
+                    
+                    console.log('Connection', connection);
+                    console.log('Now connected, connection ID=' + connection.id); 
+                })
+                .fail(function(){
+                    //This might be because of Auth problems
+                    //Or this page/site does not have the SignalR Log4Net Hub or may not even be an Umbraco site
+                    displayError();
+                });
+    }
+
+    //When connected - clicking button forces to disconnect
+    if(connection.state === HubStatus.Connected){
+        connection.stop();
+    }
+
+};
+
+function addMessage(message:string, cssClass:string){
     //Message displayed in DevTools tab - so user can see/understand the error
     var messageToDisplay = document.createElement("div");
     messageToDisplay.classList.add('log-item');
     messageToDisplay.classList.add(cssClass);
-    messageToDisplay.innerHTML = '<pre>' + message + '</pre>';
+    messageToDisplay.innerHTML = '<div class="summary">' + message + '</div>';
 
-    if(appendToImportant){
-        //Select the main importantMessages div by it's id to inject messages
-        document.getElementById('importantMessages').appendChild(messageToDisplay);
-    }
-    else {
-        //Add to the bottom of the logs
-        document.getElementById('logs').appendChild(messageToDisplay);
-    }
+    //Add to the bottom of the logs
+    document.getElementById('logs').appendChild(messageToDisplay);
 
+    //Scroll to bottom of page/log items
+    var logContainer = document.getElementById('items');
+    logContainer.scrollTop = logContainer.scrollHeight;
     
 }
 
+ 
+
 function appendConnectedMessage(){
-    addMessage('Connected to Umbraco Logging...', 'INFO', true);
+    
+    //Set toolbar status message
+    document.getElementById('status').innerHTML = 'Connected';
+
+    //Change label button to read 'Disconnect'
+    var connectButton = document.getElementById('connectionButton');
+    connectButton.innerHTML = 'Disconnect';
+    connectButton.removeAttribute('disabled');
+
+    //Add to main area
+    addMessage('Connected to Umbraco Logging...', 'INFO');
 }
 
 function appendDisconnectedMessage(){
+
+    //Set toolbar status message
+    document.getElementById('status').innerHTML = 'Disconnected';
+
+    //Change label button to read 'Connect'
+    var connectButton = document.getElementById('connectionButton');
+    connectButton.innerHTML = 'Connect';
+    connectButton.removeAttribute('disabled');
+
     addMessage('Disconnected from Umbraco Logging...', 'INFO');
 }
 
 function appendReconnectMessage(){
+
+    //Set toolbar status message
+    document.getElementById('status').innerHTML = 'Reconnecting';
+
+    //Change label button to read 'Disconnect'
+    var connectButton = document.getElementById('connectionButton');
+    connectButton.innerHTML = 'Disconnect';
+    connectButton.removeAttribute('disabled');
+
     addMessage('Reconnecting to Umbraco Logging...', 'INFO');
 }
 
@@ -234,3 +303,9 @@ interface logForNetLevel {
     Value:number;
 }
 
+enum HubStatus {
+    Connecting = 0,
+    Connected = 1,
+    Reconnecting = 2,
+    Disconnected = 4
+}
