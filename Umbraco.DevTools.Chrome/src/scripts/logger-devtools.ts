@@ -49,12 +49,16 @@ $(function () {
                 connection.reconnecting(function(){
                     tryingToReconnect = true;
                     console.log('Reconnecting event fired');
+
+                    appendReconnectMessage();
                 });
 
                 //Reconnected event
                 connection.reconnected(function(){
                     tryingToReconnect = false;
                     console.log('Reconnected event fired');
+
+                    appendReconnectedMessage();
                 });
 
                 //Disconnect event
@@ -62,11 +66,11 @@ $(function () {
                     console.log('Disconnect event (Trying to Reconnect?)', tryingToReconnect);
 
                     if(tryingToReconnect){
-                        //Trying to reconnect the client due to connectivity
-                        appendReconnectMessage();
+                        //Disconnecting - but failed to reconnect
+                        appendFailedReconnectMessage();
                     }
                     else {
-                        //The client was disconnected (either by server)
+                        //The client was disconnected (either by server or user)
                         appendDisconnectedMessage();
                     }
                 });
@@ -215,6 +219,20 @@ function appendConnectedMessage(){
     addMessage('Connected to Umbraco Logging...', 'INFO');
 }
 
+function appendReconnectedMessage(){
+    
+    //Set toolbar status message
+    document.getElementById('status').innerHTML = 'Connected';
+
+    //Change label button to read 'Disconnect'
+    var connectButton = document.getElementById('connectionButton');
+    connectButton.innerHTML = 'Disconnect';
+    connectButton.removeAttribute('disabled');
+
+    //Add to main area
+    addMessage('Reconnected to Umbraco Logging...', 'INFO');
+}
+
 function appendDisconnectedMessage(){
 
     //Set toolbar status message
@@ -226,6 +244,19 @@ function appendDisconnectedMessage(){
     connectButton.removeAttribute('disabled');
 
     addMessage('Disconnected from Umbraco Logging...', 'INFO');
+}
+
+function appendFailedReconnectMessage(){
+
+    //Set toolbar status message
+    document.getElementById('status').innerHTML = 'Disconnected';
+
+    //Change label button to read 'Connect'
+    var connectButton = document.getElementById('connectionButton');
+    connectButton.innerHTML = 'Connect';
+    connectButton.removeAttribute('disabled');
+
+    addMessage('Disconnected from Umbraco Logging, failed to reconnect', 'INFO');
 }
 
 function appendReconnectMessage(){
