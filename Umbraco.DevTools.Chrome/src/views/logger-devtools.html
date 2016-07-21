@@ -24,8 +24,15 @@
 
              <!-- Need this fixed to the top -->
             <div id="toolbar">
-                Pause Logs <input type="checkbox" name="pauseLogger" id="pauseLogger" />
-                <button id="clearButton">Clear Logs</button>
+                <div class="utility">
+                    Pause Logs <input type="checkbox" name="pauseLogger" id="pauseLogger" />
+                    <button id="clearButton">Clear Logs</button>
+                </div>
+                
+                <div class="status">
+                    <span id="status">Loading</span>
+                    <button id="connectionButton">Disconnect</button>
+                </div>
             </div>
 
             <div id="items">

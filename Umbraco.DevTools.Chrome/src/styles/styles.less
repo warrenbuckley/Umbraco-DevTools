@@ -34,7 +34,21 @@ body {
     background: #f3f3f3;
     padding: 5px;
     border-bottom: 1px solid #ccc;
-    flex: 0 0 auto;
+    display:flex;
+    justify-content: flex-start;
+    align-content: stretch;
+    align-items: stretch;
+
+    .utility {
+        flex-grow: 1;
+        flex-shrink: 0;
+    }
+
+    .status {
+        flex-grow: 0;
+        flex-shrink: 0;
+        text-align: right;
+    }
 }
 
 #items {
