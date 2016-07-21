@@ -142,7 +142,6 @@ function toggleDetailsDisplay(e:Event){
 
 function clearLogs(e:Event) {
     e.preventDefault();
-    document.getElementById('importantMessages').innerHTML = '';
     document.getElementById('logs').innerHTML = '';
 }
 
