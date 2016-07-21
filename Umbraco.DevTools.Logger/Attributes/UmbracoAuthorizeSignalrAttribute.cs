@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Security.Principal;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
@@ -17,46 +18,54 @@ namespace Umbraco.DevTools.Logger.Attributes
 
         protected override bool UserAuthorized(IPrincipal user)
         {
-
-            var auth = UmbracoContext.Current.HttpContext.GetUmbracoAuthTicket();
-            
-            //If we do not get an Umb Auth Ticket/Cookie then
-            //Not logged in at all
-            if (auth == null)
+            //Not logged in & thus do not have Umbraco auth cookie assigned
+            if (user == null)
             {
                 return false;
             }
 
-            //Next let's check the AuthTicket has expired or not.
-            //If it has then prevent access
-            if (auth.Expired)
+            if (user.Identity == null)
             {
+                //If we cannot get the identity then something weird has gone wrong
                 return false;
             }
-            
-            //The name (login/username) is empty on AuthTicket
-            if (string.IsNullOrEmpty(auth.Name))
+
+
+            if (user.Identity.IsAuthenticated == false)
+            {
+                //We got the umbraco auth/identity cookie but its telling ut no longer authenticated
+                //Then ensure we do not allow access
+                return false;
+            }
+       
+            //Need to try cast Identity to Umbraco specific type
+            //Again if it's not this then we have some other auth token/cookie & bail out
+            if (user.Identity is Umbraco.Core.Security.UmbracoBackOfficeIdentity == false)
+            {
+                //Not the correct object/type we are expecting for the Identity property
+                return false;
+            }
+
+            //Explicitly cast to UmbracoBackOfficeIdentity
+            var umbracoIdentity = (UmbracoBackOfficeIdentity) user.Identity;
+
+            //Check if the ticket/auth expired or not?
+            if (umbracoIdentity.Ticket.Expired)
             {
                 return false;
             }
 
-            //Still verify we can get the user from UserService
-            //Just in case the AuthTicket for user is no longer valid (user deleted or user denied access)
-            var currentUser = UmbracoContext.Current.Application.Services.UserService.GetByUsername(auth.Name);
-
-            if (currentUser == null)
+            //Ensure user has access to the developer section
+            if (umbracoIdentity.AllowedApplications.Contains("developer") == false)
             {
+                //May have access to other areas of Umbraco
+                //But makes sense that developers or users who have access to developer section can run this tool
                 return false;
             }
 
-            //Been revoked access to Umbraco since the auth ticket/cookie was granted
-            if (currentUser.IsApproved == false)
-            {
-                return false;
-            }
-            
-            //TODO: Unsure if I should check if the logged in backoffice user has access to the 'developer' section or not
-
+            //TODO: Should we check if user is in admin group/role?
+            //Was expecting it on this identity object inside roles but is empty
+         
             //Passed all above tests - so logged in & valid still
             //Return true
             return true;

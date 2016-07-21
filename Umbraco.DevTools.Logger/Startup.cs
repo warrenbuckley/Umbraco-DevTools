@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using System;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
 using Microsoft.Owin.Cors;
 using Owin;
+using Umbraco.Core.Models.Identity;
+using Umbraco.Core.Security;
 using Umbraco.DevTools.Logger;
 using Umbraco.Web;
+using Umbraco.Web.Security.Identity;
 
 // To use this startup class, change the appSetting value in the web.config called 
 // "owin:appStartup" to be "UmbracoDevToolsLoggerOwinStartup"
@@ -22,9 +28,10 @@ namespace Umbraco.DevTools.Logger
             // Branch the pipeline here for requests that start with "/signalr"
             app.Map("/signalr", map =>
             {
-                //WB: Trying this as a random thing
-                //map.UseUmbracoBackOfficeCookieAuthentication(ApplicationContext.Current, PipelineStage.Authenticate);
-                //map.UseUmbracoBackOfficeExternalCookieAuthentication(ApplicationContext.Current, PipelineStage.Authenticate);
+
+                var signalrAuth = map.CreateUmbracoCookieAuthOptions(new [] { "/signalr/negotiate", "/signalr/connect", "/signalr/start", "/signalr/abort" });
+                signalrAuth.Provider = new BackOfficeCookieAuthenticationProvider();
+                map.UseUmbracoBackOfficeCookieAuthentication(this.ApplicationContext, signalrAuth, PipelineStage.Authenticate);
                 
                 // Setup the CORS middleware to run before SignalR.
                 // By default this will allow all origins. You can 
