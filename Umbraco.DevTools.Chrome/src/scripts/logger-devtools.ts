@@ -198,9 +198,7 @@ function addMessage(message:string, cssClass:string){
     document.getElementById('logs').appendChild(messageToDisplay);
 
     //Scroll to bottom of page/log items
-    var logContainer = document.getElementById('items');
-    logContainer.scrollTop = logContainer.scrollHeight;
-    
+    scrollToBottom();
 }
 
  
@@ -272,6 +270,19 @@ function appendReconnectMessage(){
     addMessage('Reconnecting to Umbraco Logging...', 'INFO');
 }
 
+function scrollToBottom(){
+
+    //Get value of checkbox in toolbar
+    var checkboxScroll = document.getElementById('scrollToBottom');
+
+    //Only log items to the DIV if checkbox is NOT checked
+    if(checkboxScroll.checked === true){
+        //Scroll to bottom of page/log items
+        var logContainer = document.getElementById('items');
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+}
+
 function displayError(){
     addMessage('Error: Cannot connect to SignalR Log4Net Hub or you do not have permission to.', 'ERROR');
 }
@@ -306,8 +317,7 @@ function appendLogMessage(log:logMessage){
         summary.addEventListener('click', toggleDetailsDisplay);
 
         //Scroll to bottom of page/log items
-        var logContainer = document.getElementById('items');
-        logContainer.scrollTop = logContainer.scrollHeight;
+        scrollToBottom();
     }
        
 }
