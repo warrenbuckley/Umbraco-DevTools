@@ -3,6 +3,8 @@ A Chrome Extension to view live logs from an Umbraco Website. WIth future plans 
 
 ![Screenshot of Umbraco Developer Tools](https://raw.githubusercontent.com/warrenbuckley/Umbraco-DevTools/master/md-images/github-screenshot.png)
 
+## Why build this?
+I personally always wanted to build a Chrome Extension and learn something a bit new, but I find sometime trawling through large or long logfiles hard & cumbersome. So I thought it would be a nicer debugging experience that you open a Chrome Developer Tools and see logs in realtime whilst you perform the set of actions that is casuing an error or irregularity. With seeing logs in realtime you will be able to pinpoint the problem a lot quicker.
 
 ## Requirements for usage
 Due to some underlying OWIN MiddleWare startup code for Umbraco that I need to hook into, this now requires a minimum of at least 7.5 beta 2 and the associated Chrome Extension from the Chrome Store - https://chrome.google.com/webstore/detail/umbraco-developer-tools/gjcgemjmhmgcmioedcghnemmadcimjia
