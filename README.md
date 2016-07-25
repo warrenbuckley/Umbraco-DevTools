@@ -1,5 +1,8 @@
 # Umbraco Dev Tools
-A Chrome Extension to view live logs from an Umbraco Website. QIth future plans to see more detailed view/report of MiniProfiler results, along with a few other useful tools to add to your toolkit.
+A Chrome Extension to view live logs from an Umbraco Website. WIth future plans to see more detailed view/report of MiniProfiler results, along with a few other useful tools to add to your toolkit.
+
+![Screenshot of Umbraco Developer Tools](https://raw.githubusercontent.com/warrenbuckley/Umbraco-DevTools/master/md-images/github-screenshot.png)
+
 
 ## Requirements for usage
 Due to some underlying OWIN MiddleWare startup code for Umbraco that I need to hook into, this now requires a minimum of at least 7.5 beta 2 and the associated Chrome Extension from the Chrome Store - https://chrome.google.com/webstore/detail/umbraco-developer-tools/gjcgemjmhmgcmioedcghnemmadcimjia
