@@ -1,24 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
     <metadata>
         <id>Umbraco.DevTools.Logger</id>
-        <version>1.0.0</version>
+        <version>1.0.0-beta</version>
         <title>Umbraco Developer Tools - Logging</title>
         <authors>Warren Buckley</authors>
+        <projectUrl>https://github.com/warrenbuckley/Umbraco-DevTools</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/warrenbuckley/Umbraco-DevTools/master/Build/nuget-icon.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>
-        This allows your Umbraco website to send its Logs in realtime in conjunction with the Chrome Umbraco Developer Tools extension.
-        This is not an official project of the Umbraco HQ but a pet project by Warren.
-        </description>
+        <description>This allows your Umbraco website to send its Logs in realtime in conjunction with the Chrome Umbraco Developer Tools extension.
+
+This is not an official project of the Umbraco HQ but a pet project by Warren.</description>
         <summary />
+        <tags>Umbraco</tags>
         <dependencies>
-            <dependency id="Microsoft.AspNet.SignalR" version="2.2.1" />
             <dependency id="Microsoft.Owin.Cors" version="3.0.1" />
+            <dependency id="Microsoft.AspNet.SignalR.SystemWeb" version="2.2.1" />
         </dependencies>
     </metadata>
     <files>
-        <file src="log4net.config.install.xdt" target="content\config\log4net.config.install.xdt" />
-        <file src="log4net.config.uninstall.xdt" target="content\config\log4net.config.uninstall.xdt" />
+        <file src="log4net.config.install.xdt" target="content\Config\log4net.config.install.xdt" />
+        <file src="log4net.config.uninstall.xdt" target="content\Config\log4net.config.uninstall.xdt" />
         <file src="web.config.install.xdt" target="content\web.config.install.xdt" />
         <file src="web.config.uninstall.xdt" target="content\web.config.uninstall.xdt" />
         <file src="..\Umbraco.DevTools.Logger\bin\Debug\Umbraco.DevTools.Logger.dll" target="lib\Umbraco.DevTools.Logger.dll" />
