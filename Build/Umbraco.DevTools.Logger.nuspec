@@ -16,6 +16,7 @@ This is not an official project of the Umbraco HQ but a pet project by Warren.</
         <dependencies>
             <dependency id="Microsoft.Owin.Cors" version="3.0.1" />
             <dependency id="Microsoft.AspNet.SignalR.SystemWeb" version="2.2.1" />
+            <dependency id="UmbracoCms" version="7.5.0-beta2" />
         </dependencies>
     </metadata>
     <files>
