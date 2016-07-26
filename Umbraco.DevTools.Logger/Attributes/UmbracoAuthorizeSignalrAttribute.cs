@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Principal;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Security;
-using Umbraco.Web;
 using AuthorizeAttribute = Microsoft.AspNet.SignalR.AuthorizeAttribute;
 
 namespace Umbraco.DevTools.Logger.Attributes
@@ -13,7 +10,7 @@ namespace Umbraco.DevTools.Logger.Attributes
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public class UmbracoAuthorizeSignalrAttribute : AuthorizeAttribute
     {
-        private const string LogAuthFailMessage = "Umbraco DevTools; User Authorized failed: {0}";
+        private const string LogAuthFailMessage = "Umbraco DevTools - User Authorized failed: {0}";
 
         public UmbracoAuthorizeSignalrAttribute()
         {
@@ -24,7 +21,7 @@ namespace Umbraco.DevTools.Logger.Attributes
             //Not logged in & thus do not have Umbraco auth cookie assigned
             if (user == null)
             {
-                LogHelper.Warn<IPrincipal>(string.Format(LogAuthFailMessage, "user == null"));
+                LogHelper.Warn<UmbracoAuthorizeSignalrAttribute>(string.Format(LogAuthFailMessage, "user == null"));
                 return false;
             }
 
@@ -38,7 +35,7 @@ namespace Umbraco.DevTools.Logger.Attributes
 
             if (user.Identity.IsAuthenticated == false)
             {
-                LogHelper.Warn<IPrincipal>(string.Format(LogAuthFailMessage, "user.Identity.IsAuthenticated == false"));
+                LogHelper.Warn<UmbracoAuthorizeSignalrAttribute>(string.Format(LogAuthFailMessage, "user.Identity.IsAuthenticated == false"));
                 //We got the umbraco auth/identity cookie but its telling ut no longer authenticated
                 //Then ensure we do not allow access
                 return false;
@@ -46,9 +43,9 @@ namespace Umbraco.DevTools.Logger.Attributes
        
             //Need to try cast Identity to Umbraco specific type
             //Again if it's not this then we have some other auth token/cookie & bail out
-            if (user.Identity is Umbraco.Core.Security.UmbracoBackOfficeIdentity == false)
+            if (user.Identity is UmbracoBackOfficeIdentity == false)
             {
-                LogHelper.Warn<IPrincipal>(string.Format(LogAuthFailMessage, "user.Identity is Umbraco.Core.Security.UmbracoBackOfficeIdentity == false"));
+                LogHelper.Warn<UmbracoAuthorizeSignalrAttribute>(string.Format(LogAuthFailMessage, "user.Identity is Umbraco.Core.Security.UmbracoBackOfficeIdentity == false"));
                 //Not the correct object/type we are expecting for the Identity property
                 return false;
             }
@@ -59,14 +56,14 @@ namespace Umbraco.DevTools.Logger.Attributes
             //Check if the ticket/auth expired or not?
             if (umbracoIdentity.Ticket.Expired)
             {
-                LogHelper.Warn<IPrincipal>(string.Format(LogAuthFailMessage, "umbracoIdentity.Ticket.Expired"));
+                LogHelper.Warn<UmbracoAuthorizeSignalrAttribute>(string.Format(LogAuthFailMessage, "umbracoIdentity.Ticket.Expired"));
                 return false;
             }
 
             //Ensure user has access to the developer section
             if (umbracoIdentity.AllowedApplications.Contains("developer") == false)
             {
-                LogHelper.Warn<IPrincipal>(string.Format(LogAuthFailMessage, "umbracoIdentity.AllowedApplications.Contains(\"developer\") == false"));
+                LogHelper.Warn<UmbracoAuthorizeSignalrAttribute>(string.Format(LogAuthFailMessage, "umbracoIdentity.AllowedApplications.Contains(\"developer\") == false"));
                 //May have access to other areas of Umbraco
                 //But makes sense that developers or users who have access to developer section can run this tool
                 return false;
