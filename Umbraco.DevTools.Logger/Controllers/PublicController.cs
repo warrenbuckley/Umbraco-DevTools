@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using System.Web.Http.Cors;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 
@@ -8,6 +9,7 @@ namespace Umbraco.DevTools.Logger.Controllers
     /// /Umbraco/DevTools/Public/
     /// </summary>
     [PluginController("DevTools")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class PublicController : UmbracoApiController
     {
         [HttpGet]
