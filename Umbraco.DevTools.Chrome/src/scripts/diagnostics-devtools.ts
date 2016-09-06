@@ -32,17 +32,24 @@ function getGeneralInfo(baseUrl) {
     var apiRequest = new XMLHttpRequest();
     apiRequest.open('GET', apiUrl, true);
     apiRequest.onreadystatechange = function () {
-        if (apiRequest.status !== 200 || apiRequest.readyState != 4) {
-            return;
-        }
-        //Not logged in to Umbraco backoffice
-        if (apiRequest.status == 401 && apiRequest.readyState == 4) {
+       
+console.log('req status', apiRequest.status);
+
+        //Not logged in to Umbraco backoffice or route nto found
+         if ((apiRequest.status === 401 && apiRequest.readyState === 4) || (apiRequest.status === 404 && apiRequest.readyState === 4) {
             console.log('UNAUTH');
+
+            document.getElementById('general-data').innerHTML = "<span class='error'>Ensure you are logged into the Umbraco backoffice</span>";
         }
-        console.log('apiRequest', apiRequest);
-        console.log('Response from API', apiRequest.responseText);
-        //Parse & render the JSON response using mustache
-        appendGeneralInfo(apiRequest.responseText);
+
+        if(apiRequest.status === 200 && apiRequest.readyState === 4){
+            console.log('apiRequest', apiRequest);
+            console.log('Response from API', apiRequest.responseText);
+
+            //Parse & render the JSON response using mustache
+            appendGeneralInfo(apiRequest.responseText);
+        }
+        
     };
     apiRequest.withCredentials = true;
     apiRequest.send();
@@ -51,24 +58,33 @@ function getGeneralInfo(baseUrl) {
 function getAssemblies(baseUrl) {
     //So it's the current inspected tab + /Umbraco/DevTools/Public/Ping
     var apiUrl = baseUrl + "/umbraco/backoffice/DevTools/Diagnostics/GetAssemblies";
+
     //We use the current inspected tab's cookies - & if they have auth'd to Umbraco backoffice
     //Then we can use it for our AJAX request to the backoffice API
     console.log('Setting cookies to ', cookies);
     document.cookie = cookies;
+
     var apiRequest = new XMLHttpRequest();
     apiRequest.open('GET', apiUrl, true);
     apiRequest.onreadystatechange = function () {
-        if (apiRequest.status !== 200 || apiRequest.readyState != 4) {
-            return;
-        }
-        //Not logged in to Umbraco backoffice
-        if (apiRequest.status == 401 && apiRequest.readyState == 4) {
+       
+        console.log('req status', apiRequest.status);
+
+        //Not logged in to Umbraco backoffice or route nto found
+        if (apiRequest.status === 401 || apiRequest.status === 404) {
             console.log('UNAUTH');
+
+            document.getElementById('assemblies-data').innerHTML = "<span class='error'>Ensure you are logged into the Umbraco backoffice</span>";
         }
-        console.log('apiRequest', apiRequest);
-        console.log('Response from API', apiRequest.responseText);
-        //Parse & render the JSON response using mustache
-        appendAssemblies(apiRequest.responseText);
+
+        if(apiRequest.status === 200 && apiRequest.readyState === 4){
+            console.log('apiRequest', apiRequest);
+            console.log('Response from API', apiRequest.responseText);
+
+            //Parse & render the JSON response using mustache
+            appendAssemblies(apiRequest.responseText);
+        }
+
     };
     apiRequest.withCredentials = true;
     apiRequest.send();
@@ -84,8 +100,10 @@ function preFetchMustacheTemplates() {
             console.log('Problem fetching mustache template');
             return;
         }
+
         //The mustache template as HTML
         generalMustacheTemplate = generalTemplate.responseText;
+
         //Parse the template once on DOM load
         //No need to fetch it every time
         Mustache.parse(generalMustacheTemplate);
@@ -99,8 +117,10 @@ function preFetchMustacheTemplates() {
             console.log('Problem fetching mustache template');
             return;
         }
+
         //The mustache template as HTML
         assembliesMustacheTemplate = assembliesTemplate.responseText;
+
         //Parse the template once on DOM load
         //No need to fetch it every time
         Mustache.parse(assembliesMustacheTemplate);
