@@ -1,15 +1,71 @@
 <html>
     <head>
+        <!-- Mustache JS Lib -->
+        <script src="../scripts/mustache.min.js"></script>
+
         <!-- Scripts -->
         <script src="../scripts/diagnostics-devtools.js"></script>
+
+        <!-- CSS -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" />
+        <link rel="stylesheet" href="../css/diagnostics.css" />
     </head>
     <body>
 
         <div id="container">
 
-            <h1>Diagnostics Hi</h1>
-            <span id="result">Fetching</span>
-        </div>
+            <h1>Diagnostics</h1>
 
+            <!-- General -->
+            <div class="diagnostics__details" id="general">
+                <div class="diagnostics__header">
+                    General
+                </div>
+                <div class="diagnostics__result" id="general-data">
+                    Fetching Results
+                </div>
+            </div>
+
+            <!-- Assemblies -->
+            <div class="diagnostics__details" id="assemblies">
+                <div class="diagnostics__header">
+                    Assemblies
+                </div>
+                <div class="diagnostics__result" id="assemblies-data">
+                    Fetching Results
+                </div>
+            </div>
+
+            <!-- Permissions -->
+            <div class="diagnostics__details" id="permissions">
+                <div class="diagnostics__header">
+                    Permissions
+                </div>
+                <div class="diagnostics__result">
+                    Fetching Results
+                </div>
+            </div>
+
+            <!-- Permissions -->
+            <div class="diagnostics__details" id="umbraco">
+                <div class="diagnostics__header">
+                    Umbraco
+                </div>
+                <div class="diagnostics__result">
+                    Fetching Results
+                </div>
+            </div>
+
+            <!-- Forms -->
+            <div class="diagnostics__details" id="forms">
+                <div class="diagnostics__header">
+                    Umbraco Forms
+                </div>
+                <div class="diagnostics__result">
+                    Fetching Results
+                </div>
+            </div>
+
+        </div>
     </body>
 </html>

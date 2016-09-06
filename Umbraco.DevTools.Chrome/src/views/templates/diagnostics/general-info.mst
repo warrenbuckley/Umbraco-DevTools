@@ -1,0 +1,18 @@
+<div>
+    <h3>Version</h3>
+    <strong>Version</strong> {{ UmbracoVersion.Version }}<br/>
+    <strong>Version Comment</strong> {{ UmbracoVersion.VersionComment }}<br/>
+    <strong>Version Assembly</strong> {{ UmbracoVersion.Assembly }}
+
+    <h3>Server</h3>
+    <strong>IIS Version</strong> {{ Server.IisVersion }}<br/>
+    <strong>ASP.NET Version</strong> {{ Server.AspNetVersion }}<br/>
+    <strong>Operating System</strong> {{ Server.OperatingSystem }}<br/>
+    <strong>Machine Name</strong> {{ Server.MachineName }}<br/>
+    <strong>Processor Count</strong> {{ Server.ProcessorCount }}
+
+    <h3>Database</h3>
+    <strong>Database Type</strong> {{ Database.Type }}<br/>
+    <strong>Connection String</strong> {{ Database.Connection }}<br/>
+    <strong>Configured?</strong> {{ Database.Configured }}
+</div>
