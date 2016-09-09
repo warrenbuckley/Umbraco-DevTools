@@ -32,3 +32,61 @@ body {
 .error {
   color:#d90416;
 }
+
+
+
+/*
+======================================================
+Umbraco's Backoffice CSS loading bubble indicator
+======================================================
+*/
+
+.umb-load-indicator {
+  margin: 0 auto;
+  padding: 0;
+  width: 50px;
+  text-align: center;
+}
+
+.umb-load-indicator__bubble {
+  display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin: 0;
+    border: 2px solid #2e8aea;
+    border-radius: 100%;
+    transform: transformZ(0);
+    animation: umbLoadIndicatorAnimation 1.4s infinite
+}
+
+.umb-load-indicator__bubble:nth-child(1n) {
+    left: -16px;
+    animation-delay: 0s
+}
+
+.umb-load-indicator__bubble:nth-child(2n) {
+    left: 0;
+    animation-delay: .15s
+}
+
+.umb-load-indicator__bubble:nth-child(3n) {
+    left: 16px;
+    animation-delay: .30s
+}
+
+@keyframes umbLoadIndicatorAnimation {
+    0% {
+        background: #2e8aea;
+        transform: scale(0.5)
+    }
+
+    50% {
+        background: white;
+        transform: scale(1)
+    }
+
+    100% {
+        background: #2e8aea;
+        transform: scale(0.5)
+    }
+}
