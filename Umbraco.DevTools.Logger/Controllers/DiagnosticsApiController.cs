@@ -9,6 +9,8 @@ using System.Security.Principal;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Routing;
+using umbraco.cms.businesslogic.packager;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Models;
 using Umbraco.DevTools.Logger.Models.Diagnostics;
@@ -167,30 +169,30 @@ namespace Umbraco.DevTools.Logger.Controllers
         }
 
         [HttpGet]
-        public UmbracoApps GetUmbracoInfo()
+        public UmbracoInfo GetUmbracoInfo()
         {
-            //Sections & Trees
-            var sections = UmbracoContext.Application.Services.SectionService.GetSections();
+            //Get Sections & Associated Trees
+            var sectionsWithTrees = GetSectionsWithTrees();
 
-            var umbracoApps = new List<UmbracoSection>();
+            //Get Macros
+            var allMacros = GetMacros();
 
-            //Get the specific trees for the section
-            foreach (var section in sections)
+            //Get File Bits
+            var physicalFiles = GetPhysicalFiles();
+
+            //MVC Routes
+            var mvcRoutes = GetMvcRoutes();
+
+            //Packages
+            var umbPackages = GetPackages();
+
+            return new UmbracoInfo()
             {
-                var treesForSection = UmbracoContext.Application.Services.ApplicationTreeService.GetApplicationTrees(section.Alias);
-
-                var umbracoApp = new UmbracoSection
-                {
-                    App = section,
-                    Trees = treesForSection.ToList()
-                };
-
-                umbracoApps.Add(umbracoApp);
-            }
-
-            return new UmbracoApps
-            {
-                Apps = umbracoApps
+                Sections = sectionsWithTrees,
+                Macros = allMacros,
+                //Files = physicalFiles,
+                Routes = mvcRoutes,
+                Packages = umbPackages
             };
 
 
@@ -202,14 +204,8 @@ namespace Umbraco.DevTools.Logger.Controllers
 
 
             //Document Types & User Types
-
-
-            //Files (Templates, CSS, Scripts)
-
-
-            //Macros
-
-
+            
+            
             //Domains, languages & Dictionary
 
 
@@ -234,21 +230,9 @@ namespace Umbraco.DevTools.Logger.Controllers
             // var b = UmbracoContext.Application.Services.ContentTypeService.GetAllContentTypeAliases();
 
             // //Get domains
-            // var c = UmbracoContext.Application.Services.DomainService.GetAll(true);
-
-            // //Get CSS files
-            //var d = UmbracoContext.Application.Services.FileService.GetStylesheets();
-
-            // //Get Template Files
-            // var e = UmbracoContext.Application.Services.FileService.GetTemplates();
-
-            // //Get scripts
-            // var f = UmbracoContext.Application.Services.FileService.GetScripts();
-
-            // //Get all Macros
-            // var g = UmbracoContext.Application.Services.MacroService.GetAll();
-
+            // var c = UmbracoContext.Application.Services.DomainService.GetAll(true)
             // var h = UmbracoContext.Application.Services.LocalizationService.GetAllLanguages();
+
 
             // var i = UmbracoContext.Application.Services.MemberGroupService.GetAll();
 
@@ -256,9 +240,13 @@ namespace Umbraco.DevTools.Logger.Controllers
 
             // var k = UmbracoContext.Application.Services.MemberTypeService.GetAll();
 
+
+
             // var m = UmbracoContext.Application.Services.RelationService.GetAllRelations();
 
             // var n = UmbracoContext.Application.Services.SectionService.GetSections();
+
+
 
             // var o = UmbracoContext.Application.Services.ServerRegistrationService.CurrentServerIdentity;
 
@@ -266,19 +254,81 @@ namespace Umbraco.DevTools.Logger.Controllers
 
             // var q = UmbracoContext.Application.Services.ServerRegistrationService.GetActiveServers();
 
-            //return "hello";
+        }
+
+        private List<UmbracoSection> GetSectionsWithTrees()
+        {
+            //Sections & Trees
+            var sections = UmbracoContext.Application.Services.SectionService.GetSections();
+
+            var umbracoApps = new List<UmbracoSection>();
+
+            //Get the specific trees for the section
+            foreach (var section in sections)
+            {
+                var treesForSection = UmbracoContext.Application.Services.ApplicationTreeService.GetApplicationTrees(section.Alias);
+
+                var umbracoApp = new UmbracoSection
+                {
+                    App = section,
+                    Trees = treesForSection.ToList()
+                };
+
+                umbracoApps.Add(umbracoApp);
+            }
+
+            return umbracoApps;
+        }
+
+        private List<IMacro> GetMacros()
+        {
+            return UmbracoContext.Application.Services.MacroService.GetAll().ToList();
+        }
+
+        private UmbracoFiles GetPhysicalFiles()
+        {
+            //Get CSS files
+            var cssFiles = UmbracoContext.Application.Services.FileService.GetStylesheets().ToList();
+
+            //Get Template Files
+            var templateFiles = UmbracoContext.Application.Services.FileService.GetTemplates().ToList();
+
+            //Get scripts
+            var scriptFiles = UmbracoContext.Application.Services.FileService.GetScripts().ToList();
+
+            return new UmbracoFiles
+            {
+                Stylesheets = cssFiles,
+                Templates = templateFiles,
+                Scripts = scriptFiles
+            };
+        }
+
+        private List<Routes> GetMvcRoutes()
+        {
+            //Get the routes from route table
+            var allRoutes = RouteTable.Routes.ToList();
+            var routes = new List<Routes>();
+
+            foreach (var route in allRoutes)
+            {
+                var item = (Route) route;
+
+                routes.Add(new Routes
+                {
+                    Url = item.Url
+                });
+            }
+
+            return routes;
+        }
+
+        private List<InstalledPackage> GetPackages()
+        {
+            return InstalledPackage.GetAllInstalledPackages();
         }
     }
 
-    public class UmbracoApps
-    {
-        public List<UmbracoSection> Apps { get; set; }
-    }
-
-    public class UmbracoSection
-    {
-        public Section App { get; set; }
-        public List<ApplicationTree> Trees { get; set; }
-    }
+    
     
 }

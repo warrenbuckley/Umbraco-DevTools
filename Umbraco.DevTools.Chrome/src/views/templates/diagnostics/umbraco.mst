@@ -1,0 +1,41 @@
+<h3>Macros</h3>
+{{#Macros}}
+    <h4>
+        {{ Name }} <br/>
+        <small>
+            <strong>Id:</strong> {{ Id }}<br/>
+            <strong>Key:</strong> {{ Key }}
+        </small>
+    </h4>
+    <ul>
+        <li>Alias: {{ Alias }}</li>
+        <li>Cache Duration: {{ CacheDuration }}</li>
+        <li>Cache by Member? {{ CacheByMember }}</li>
+        <li>Cache by Page? {{ CacheByPage }}</li>
+        <li>Use in RTE & the grid? {{ UseInEditor }}</li>
+        <li>
+            Render in RTE & the grid? 
+            {{^DontRender}}true{{/DontRender}}{{#DontRender}}false{{/DontRender}}
+        </li>
+    </ul>
+{{/Macros}}
+
+<h3>Sections</h3>
+{{#Sections}}
+    <h4>Trees for Section {{ App.Name }}</h4>
+    <ul>
+    {{#Trees}}
+        <li>
+            <strong>{{ Title }}</strong> with alias '<em>{{ Alias }}</em>'<br/>
+            <small>{{ Type }}</small>
+        </li>
+    {{/Trees}}
+    </ul>
+{{/Sections}}
+
+<h3>MVC Routes</h3>
+<ul>
+    {{#Routes}}
+        <li>{{ Url }}</li>
+    {{/Routes}}
+</ul>

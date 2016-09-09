@@ -1,0 +1,9 @@
+{{ #Folders }}
+    <h3>{{ FolderName }}</h3>
+
+    <ul>
+        {{ #Permissions }}
+           <li>{{ User }} {{ Access }} {{ Type }}
+        {{ /Permissions }}
+    </ul>
+{{ /Folders }}
