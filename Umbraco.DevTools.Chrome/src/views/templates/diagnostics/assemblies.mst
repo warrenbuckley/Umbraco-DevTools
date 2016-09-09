@@ -3,16 +3,19 @@
         <thead>
             <th>Assembly</th>
             <th>Version</th>
-            <th>CheckSum MD5</th>
-            <th>CheckSum SHA1</th>
+            <th>Checksum</th>
         </thead>
         <tbody>
             {{#Assemblies}}
                 <tr>
                     <td>{{ Name }}</td>
                     <td>{{ Version }}</td>
-                    <td>{{ ChecksumMD5 }}</td>
-                    <td>{{ ChecksumSHA1 }}</td>
+                    <td>
+                        <small>
+                            <strong>MD5:</strong> {{ ChecksumMD5 }}<br/>
+                            <strong>SHA1:</strong> {{ ChecksumSHA1 }}
+                        </small>
+                    </td>
                 </tr>
             {{/Assemblies}}
         </tbody>
