@@ -7,10 +7,15 @@ namespace Umbraco.DevTools.Logger.Models.Diagnostics
     public class UmbracoInfo
     {
         public List<UmbracoSection> Sections { get; set; }
-        public List<IMacro> Macros { get; set; }
+        //public List<IMacro> Macros { get; set; }
         public UmbracoFiles Files { get; set; }
         public List<Routes> Routes { get; set; }
         public List<InstalledPackage> Packages { get; set; }
+    }
+
+    public class UmbracoSections
+    {
+        public List<UmbracoSection> Sections { get; set; }
     }
 
     public class UmbracoSection
@@ -26,8 +31,18 @@ namespace Umbraco.DevTools.Logger.Models.Diagnostics
         public List<Script> Scripts { get; set; }
     }
 
+    public class MvcRoutes
+    {
+        public List<Routes> Routes { get; set; }
+    }
+
     public class Routes
     {
         public string Url { get; set; }
+    }
+
+    public class UmbracoMacros
+    {
+        public List<IMacro> Macros { get; set; }
     }
 }

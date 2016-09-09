@@ -169,29 +169,86 @@ namespace Umbraco.DevTools.Logger.Controllers
         }
 
         [HttpGet]
+        public UmbracoMacros GetMacros()
+        {
+            return new UmbracoMacros
+            {
+                Macros = UmbracoContext.Application.Services.MacroService.GetAll().ToList()
+            };
+        }
+
+        [HttpGet]
+        public MvcRoutes GetRoutes()
+        {
+            //Get the routes from route table
+            var allRoutes = RouteTable.Routes.ToList();
+            var routes = new List<Routes>();
+
+            foreach (var route in allRoutes)
+            {
+                var item = (Route)route;
+
+                routes.Add(new Routes
+                {
+                    Url = item.Url
+                });
+            }
+
+            return new MvcRoutes
+            {
+                Routes = routes
+            };
+        }
+
+
+        [HttpGet]
+        public UmbracoSections GetSections()
+        {
+            //Sections & Trees
+            var sections = UmbracoContext.Application.Services.SectionService.GetSections();
+
+            var umbracoApps = new List<UmbracoSection>();
+
+            //Get the specific trees for the section
+            foreach (var section in sections)
+            {
+                var treesForSection = UmbracoContext.Application.Services.ApplicationTreeService.GetApplicationTrees(section.Alias);
+
+                var umbracoApp = new UmbracoSection
+                {
+                    App = section,
+                    Trees = treesForSection.ToList()
+                };
+
+                umbracoApps.Add(umbracoApp);
+            }
+
+            return new UmbracoSections
+            {
+                Sections = umbracoApps
+            };
+        }
+
+
+
+
+
+
+
+        [HttpGet]
         public UmbracoInfo GetUmbracoInfo()
         {
-            //Get Sections & Associated Trees
-            var sectionsWithTrees = GetSectionsWithTrees();
-
-            //Get Macros
-            var allMacros = GetMacros();
-
+            
             //Get File Bits
             var physicalFiles = GetPhysicalFiles();
 
-            //MVC Routes
-            var mvcRoutes = GetMvcRoutes();
 
             //Packages
             var umbPackages = GetPackages();
 
             return new UmbracoInfo()
             {
-                Sections = sectionsWithTrees,
-                Macros = allMacros,
                 //Files = physicalFiles,
-                Routes = mvcRoutes,
                 Packages = umbPackages
             };
 
@@ -255,36 +312,7 @@ namespace Umbraco.DevTools.Logger.Controllers
             // var q = UmbracoContext.Application.Services.ServerRegistrationService.GetActiveServers();
 
         }
-
-        private List<UmbracoSection> GetSectionsWithTrees()
-        {
-            //Sections & Trees
-            var sections = UmbracoContext.Application.Services.SectionService.GetSections();
-
-            var umbracoApps = new List<UmbracoSection>();
-
-            //Get the specific trees for the section
-            foreach (var section in sections)
-            {
-                var treesForSection = UmbracoContext.Application.Services.ApplicationTreeService.GetApplicationTrees(section.Alias);
-
-                var umbracoApp = new UmbracoSection
-                {
-                    App = section,
-                    Trees = treesForSection.ToList()
-                };
-
-                umbracoApps.Add(umbracoApp);
-            }
-
-            return umbracoApps;
-        }
-
-        private List<IMacro> GetMacros()
-        {
-            return UmbracoContext.Application.Services.MacroService.GetAll().ToList();
-        }
-
+        
         private UmbracoFiles GetPhysicalFiles()
         {
             //Get CSS files
@@ -302,25 +330,6 @@ namespace Umbraco.DevTools.Logger.Controllers
                 Templates = templateFiles,
                 Scripts = scriptFiles
             };
-        }
-
-        private List<Routes> GetMvcRoutes()
-        {
-            //Get the routes from route table
-            var allRoutes = RouteTable.Routes.ToList();
-            var routes = new List<Routes>();
-
-            foreach (var route in allRoutes)
-            {
-                var item = (Route) route;
-
-                routes.Add(new Routes
-                {
-                    Url = item.Url
-                });
-            }
-
-            return routes;
         }
 
         private List<InstalledPackage> GetPackages()

@@ -1,4 +1,3 @@
-<h3>Macros</h3>
 {{#Macros}}
     <h4>
         {{ Name }} <br/>
@@ -19,23 +18,3 @@
         </li>
     </ul>
 {{/Macros}}
-
-<h3>Sections</h3>
-{{#Sections}}
-    <h4>Trees for Section {{ App.Name }}</h4>
-    <ul>
-    {{#Trees}}
-        <li>
-            <strong>{{ Title }}</strong> with alias '<em>{{ Alias }}</em>'<br/>
-            <small>{{ Type }}</small>
-        </li>
-    {{/Trees}}
-    </ul>
-{{/Sections}}
-
-<h3>MVC Routes</h3>
-<ul>
-    {{#Routes}}
-        <li>{{ Url }}</li>
-    {{/Routes}}
-</ul>

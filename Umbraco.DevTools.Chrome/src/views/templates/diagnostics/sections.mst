@@ -1,0 +1,11 @@
+{{#Sections}}
+    <h4>Trees for Section {{ App.Name }}</h4>
+    <ul>
+    {{#Trees}}
+        <li>
+            <strong>{{ Title }}</strong> with alias '<em>{{ Alias }}</em>'<br/>
+            <small>{{ Type }}</small>
+        </li>
+    {{/Trees}}
+    </ul>
+{{/Sections}}

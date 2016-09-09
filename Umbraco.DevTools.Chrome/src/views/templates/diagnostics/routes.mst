@@ -1,0 +1,5 @@
+<ul>
+    {{#Routes}}
+        <li>{{ Url }}</li>
+    {{/Routes}}
+</ul>
